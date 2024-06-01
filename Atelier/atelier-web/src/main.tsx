@@ -2,20 +2,22 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { CssBaseline } from "@mui/material";
-import LogInPage from "./Pages/Login/LogIn.tsx";
-import Home from "./Pages/home/HomePage.tsx";
-import SignUpPage from "./Pages/Signup/SignUp.tsx";
-import FirebaseTest from "./Pages/test pages/FirebaseTest.tsx";
-import Product from "./Pages/Product/ProductPage.tsx";
-import Shop from "./Pages/shop/shopPage.tsx";
-import MyCart from "./Pages/MyCart/Cart.tsx";
-import About from "./Pages/aboutUs/aboutPage.tsx";
-import GetStarted from "./Pages/landingPage/getStarted.tsx";
-import User from "./Pages/Profile/userProfile.tsx";
-import Artist from "./Pages/Profile/artistProfile.tsx";
-import Explore from "./Pages/explore/explorePage.tsx";
+import LogInPage from "./Pages/Login/LogIn";
+import Home from "./Pages/home/HomePage";
+import SignUpPage from "./Pages/Signup/SignUp";
+import FirebaseTest from "./Pages/test pages/FirebaseTest";
+import Product from "./Pages/Product/ProductPage";
+import Shop from "./Pages/shop/shopPage";
+import MyCart from "./Pages/MyCart/Cart";
+import About from "./Pages/aboutUs/aboutPage";
+import GetStarted from "./Pages/landingPage/getStarted";
+import User from "./Pages/Profile/userProfile";
+import Artist from "./Pages/Profile/artistProfile";
+import Explore from "./Pages/explore/explorePage";
+import Notification from "./Pages/Notification";
+import UserProfile from "./Pages/Profile/userProfile"; // Import UserProfile
+import ArtistProfile from "./Pages/Profile/artistProfile";
 import ForgotPassword from "./Pages/forgot-pass/ForgotPassword.tsx";
-
 
 const router = createBrowserRouter([
   { path: "/", element: <GetStarted /> },
@@ -27,10 +29,11 @@ const router = createBrowserRouter([
   { path: "/explore", element: <Explore /> },
   { path: "/about", element: <About /> },
   { path: "/firebaseTest", element: <FirebaseTest /> },
-  { path: "/landingPage", element: <GetStarted />},
-  { path: "/user", element: <User />},
-  { path: "/Profile", element: <Artist />},
-  { path: "/Cart", element: <MyCart />},
+  { path: "/landingPage", element: <GetStarted /> },
+  { path: "/artist/:userId", element: <ArtistProfile /> }, // Corrected syntax
+  { path: "/user/:userId", element: <UserProfile /> }, // Corrected syntax
+  { path: "/Cart", element: <MyCart /> },
+  { path: "/Notification", element: <Notification /> },
   { path: "/forgot-password", element: <ForgotPassword /> },
 
 ]);

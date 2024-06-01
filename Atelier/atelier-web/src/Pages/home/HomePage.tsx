@@ -1,3 +1,12 @@
+
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { getDownloadURL, ref } from 'firebase/storage';
+import { storage } from '../../../FirebaseConfig';
+import { Box, Button } from '@mui/material';
+import './HomePage.css';
+import Header from '../../Header';
+import Footer from '../../Footer';
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { getDownloadURL, ref } from "firebase/storage";
@@ -218,6 +227,64 @@ const Home: React.FC = () => {
               </div>
             ))}
           </div>
+
+          <a className="prev" onClick={() => plusSlides(-1)}>&#10094;</a>
+          <a className="next" onClick={() => plusSlides(1)}>&#10095;</a>
+
+        </div>
+      </Box>
+
+      <Box style={{ marginBottom: '100px' }}>
+
+        <p className='text-header'>Featured Artists</p>
+
+        <div className="artists-section">
+
+          {imageURLs.slice(0, 10).map((url, index) => (
+
+            <div key={index} className="artist-wrapper">
+              <Link to="/Profile"><img className="featured-artist" src={url} alt={`Featured Artist ${index + 1}`} /></Link>
+              <div className="artist-name">{names[index]}</div>
+            </div>
+
+          ))}
+
+        </div>
+
+      </Box>
+
+      <Box style={{ marginBottom: '200px' }}>
+
+        <p className='text-header'>Explore</p>
+
+        <div className="collage">
+
+          {imageURLs.slice(6, 36).map((url, index) => (
+
+            <div key={index} className="collage_pics" data-description="Whale House, John Doe">
+              <img src={url} style={{ width: '100%' }} onClick={showDescription} />
+            </div>
+            
+          ))}
+
+        </div>
+
+        <Box textAlign="center" mt={4}>
+          <Button variant="contained" component={Link} to="/explore">
+            Explore More
+          </Button>
+        </Box>
+
+      </Box>
+
+      <div id="popup-container" className="popup-container" onClick={handleClosePopup} style={{ display: popupDisplay }}>
+        <div id="popup-content" className="popup-content">
+          <img id="popup-image" src={popupImageSrc} alt="Clicked Image" />
+          <p id="popup-description">
+          <Link to="/product">{popupDescription}</Link>
+          </p>
+        </div>
+      </div>
         </Box>
 
         <Box m="0 auto" sx={{ width: "80vw", height: "auto" }}>

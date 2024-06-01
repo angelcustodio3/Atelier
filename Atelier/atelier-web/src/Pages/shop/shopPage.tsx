@@ -5,6 +5,8 @@ import { storage } from '../../../FirebaseConfig';
 import './shopStyle.css';
 import Header from '../../Header';
 import Footer from '../../Footer';
+import Pagination from '@mui/material/Pagination';
+import Stack from '@mui/material/Stack';
 import {
   MenuItem,
   Select,
@@ -16,6 +18,8 @@ const Shop: React.FC = () => {
     const [selectedTag, setSelectedTag] = useState<string | null>(null);
     const [searchInput, setSearchInput] = useState<string>(''); // State for search input
     const [artworks, setArtworks] = useState<any[]>([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [artworksPerPage] = useState(30); // Set the number of artworks per page
     const [sortOption, setSortOption] = useState<string>('date-desc'); // State for sorting option, default to newest
   
     useEffect(() => {
@@ -51,6 +55,15 @@ const Shop: React.FC = () => {
       return true;
     });
 
+    // Logic for pagination
+    const indexOfLastArtwork = currentPage * artworksPerPage;
+    const indexOfFirstArtwork = indexOfLastArtwork - artworksPerPage;
+    const currentArtworks = filteredArtworks.slice(indexOfFirstArtwork, indexOfLastArtwork);
+
+    const handlePageChange = (event: React.ChangeEvent<unknown>, page: number) => {
+      setCurrentPage(page);
+    };
+
     const sortedArtworks = [...filteredArtworks].sort((a, b) => {
       switch (sortOption) {
         case 'name':
@@ -73,7 +86,7 @@ const Shop: React.FC = () => {
           return 0;
       }
     });
-  
+ 
     return (
       <div>
         <Header />
@@ -97,6 +110,31 @@ const Shop: React.FC = () => {
           <button onClick={() => setSelectedTag('crafts')}>Crafts</button>
           <button onClick={() => setSelectedTag('scripture')}>Scripture</button>
           <button onClick={() => setSelectedTag('oil canvas')}>Oil Canvas</button>
+        </div>
+
+        <div style={{ marginBottom: '200px' }} className="artworks-container">
+          {currentArtworks.map((artwork, index) => (
+            <div key={index} className="artwork">
+              <div className="artwork-container">
+                <img src={artwork.imageUrl} alt={artwork.type} />
+                <div className="artwork-details">
+                  <p className="title">{artwork.title}, {artwork.artist}</p>
+                  <p className="price">{artwork.price}</p>
+                  <p className="category">{artwork.type}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="pagination-container">
+          <Stack spacing={2}>
+            <Pagination 
+              count={Math.ceil(filteredArtworks.length / artworksPerPage)} 
+              variant="outlined" 
+              onChange={handlePageChange} 
+            />
+          </Stack>
         </div>
 
         <FormControl sx={{ m: 1, minWidth: 120 }}>
@@ -133,7 +171,7 @@ const Shop: React.FC = () => {
             ))}
           </div>
         </Link>
-        
+       
         <Footer />
       </div>
     );

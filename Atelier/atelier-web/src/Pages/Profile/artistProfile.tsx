@@ -1,77 +1,93 @@
-import React, { useState, useEffect } from 'react';
-//import { Link } from 'react-router-dom';
-import { getDownloadURL, ref } from 'firebase/storage';
-import { storage } from '../../../FirebaseConfig';
+import React, { useEffect, useState } from 'react';
+import { getFirestore, doc, getDoc, updateDoc } from 'firebase/firestore';
+import { Box, Typography, Avatar, Button } from '@mui/material';
+import { useParams } from 'react-router-dom';
 import './artistProfileStyle.css';
 import Header from '../../Header';
 import Footer from '../../Footer';
 
-const Artist: React.FC = () => {
-    const [coverURL, setLogoIconURL] = useState('');
-    const [profileURL, setProfileURL] = useState('');
+const ArtistProfile = () => {
+  const { userId } = useParams();
+  const [userData, setUserData] = useState(null);
+  const [followers, setFollowers] = useState(0); // State for followers count
+  const db = getFirestore();
 
-
-    useEffect(() => {
-        fetchIconURLs(); // Fetch icon URLs
-    }, []);
-
-    const fetchIconURLs = async () => {
-        try {
-          // Fetch icon URLs from Firebase Storage
-          const iconsRef = ref(storage, 'img');
-          const coverURL = await getDownloadURL(ref(iconsRef, 'hero3.jpg'));
-          const profileURL = await getDownloadURL(ref(iconsRef, '/profile/pp3.jpg'));
-          
-          setLogoIconURL(coverURL);
-          setProfileURL(profileURL);
-          
-        } catch (error) {
-          console.error('Error fetching icon URLs:', error);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const docRef = doc(db, 'accounts', userId);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          setUserData(data);
+          setFollowers(data.followers || 0); // Initialize followers count
+        } else {
+          console.log('No such document!');
         }
+      } catch (error) {
+        console.error('Error fetching document:', error);
+      }
     };
-    
-    return (
-        <div>
-            <Header />
-            
-            <div id='profile-banner'>
 
-                <div id='profile-cover'>
-                <img src={coverURL} className="cover-photo" alt="Artist cover photo" />
-                </div>
+    fetchData();
+  }, [userId, db]);
 
-                <div id='profile-elements'>
+  const handleFollow = async () => {
+    try {
+      const docRef = doc(db, 'accounts', userId);
+      if (userData && userData.role === 'artist') {
+        const newFollowersCount = followers + 1; // Increment followers count
+        await updateDoc(docRef, { followers: newFollowersCount });
+        setFollowers(newFollowersCount); // Update local state
+      }
+    } catch (error) {
+      console.error('Error updating followers count:', error);
+    }
+  };
 
-                    <div id='profile-cont'>
-                        <div id='profile-picture'>
-                        <img src={profileURL} className="profile-photo" alt="Artist profile photo" />
-                        </div>
+  const handleUnfollow = async () => {
+    try {
+      const docRef = doc(db, 'accounts', userId);
+      if (userData && userData.role === 'artist' && followers > 0) {
+        const newFollowersCount = followers - 1; // Decrement followers count
+        await updateDoc(docRef, { followers: newFollowersCount });
+        setFollowers(newFollowersCount); // Update local state
+      }
+    } catch (error) {
+      console.error('Error updating followers count:', error);
+    }
+  };
 
-                        <div id='profile-deets'>
-                            <p id='artist-name'>John Doe</p>
-                            <p id='artist-username'>@johndoe</p>
-                            <p id='artist-followers'>21 Followers</p>
-                        </div>
+  if (!userData) {
+    return <Typography>Loading...</Typography>;
+  }
 
-                    </div>
+  return (
+    <div>
+      <Header />
+    <Box display="flex" flexDirection="column" alignItems="center" p={2}>
+      {userData.coverPhoto && <img src={userData.coverPhoto} alt="Cover" style={{ width: '100%', maxHeight: '200px', objectFit: 'cover' }} />}
+      <Avatar src={userData.profilePhoto} alt={userData.fullName} sx={{ width: 100, height: 100 }} />
+      <Typography variant="h5">{userData.fullName}</Typography>
+      <Typography variant="body1">@{userData.username}</Typography>
+      <Typography variant="body2">{userData.role}</Typography>
+      <Typography variant="body2">{userData.description}</Typography>
+      
+      {userData.role === 'artist' && (
+        <Box mt={2}>
+          {followers === 0 ? (
+            <Button variant="contained" onClick={handleFollow}>Follow</Button>
+          ) : (
+            <Button variant="outlined" onClick={handleUnfollow}>Unfollow</Button>
+          )}
+          <Typography variant="body2">Followers: {followers}</Typography>
+        </Box>
+      )}
+    </Box>
 
-                    <div id='profile-buttons'>
-                        <button className='artist-profile-btns' id='msg-button'>
-                            Message
-                        </button>
-
-                        <button className='artist-profile-btns' id='follow-button'>
-                            Follow
-                        </button>
-                    </div>
-                </div>
-
-            </div>
-
-
-            <Footer />
-        </div>
-    );
+    <Footer />
+    </div>
+  );
 };
 
-export default Artist;
+export default ArtistProfile;
