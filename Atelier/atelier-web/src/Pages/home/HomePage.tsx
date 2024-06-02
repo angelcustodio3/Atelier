@@ -1,21 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { getDownloadURL, ref } from "firebase/storage";
-import { storage } from "../../../FirebaseConfig";
+import { db } from "../../../FirebaseConfig";
 import "./HomePage.css";
 import Header from "../../Header";
 import Footer from "../../Footer";
-import CloseIcon from "@mui/icons-material";
 import {
   Box,
   ImageList,
   ImageListItem,
   ImageListItemBar,
-  Dialog,
   Typography,
-  DialogTitle,
-  IconButton,
 } from "@mui/material";
+import { collection, getDocs, getDoc, getFirestore } from "firebase/firestore";
 
 const Home: React.FC = () => {
   const [slideIndex, setSlideIndex] = useState(1);
@@ -23,76 +19,54 @@ const Home: React.FC = () => {
   const [popupImageSrc, setPopupImageSrc] = useState("");
   const [popupDisplay, setPopupDisplay] = useState("none");
   const [imageURLs, setImageURLs] = useState<string[]>([]);
-  const names = [
-    "John Doe",
-    "Alice Wane",
-    "Bobby Brown",
-    "Emma Rock",
-    "Amane Yugi",
-    "Tsukasa Yugi",
-    "Yashiro Nene",
-    "Amane Yugi",
-    "Tsukasa Yugi",
-    "Yashiro Nene",
-  ];
+  const [featuredArtists, setFeaturedArtists] = useState<any[]>([]);
 
+  const db = getFirestore();
   useEffect(() => {
-    fetchIconURLs(); // Fetch icon URLs
+    fetchSlideshowArtworks();
+    fetchFeaturedArtists(); // Call the function here
   }, []);
 
-  useEffect(() => {
-    showSlides(slideIndex);
-  }, [slideIndex, imageURLs]); // Include imageURLs in the dependency array
-
-  const fetchIconURLs = async () => {
+  const fetchSlideshowArtworks = async () => {
     try {
-      // Fetch image URLs from Firebase Storage
-      const imageRef = ref(storage, "img");
-      const urls: string[] = await Promise.all(
-        [
-          "hero1.jpg",
-          "hero2.jpg",
-          "hero3.jpg",
-          "hero4.jpg",
-          "hero5.png",
-          "hero6.jpg",
-          "hero7.jpg",
-          "image18.png",
-          "image19.png",
-          "image20.png",
-          "image21.png",
-          "image22.png",
-          "image23.png",
-          "image7.png",
-          "image8.png",
-          "image9.png",
-          "image10.png",
-          "image11.png",
-          "image12.png",
-          "image1.png",
-          "image2.png",
-          "image3.png",
-          "image4.png",
-          "image5.png",
-          "image6.png",
-          "image13.png",
-          "image14.png",
-          "image15.png",
-          "image16.png",
-          "image17.png",
-          "image17.png",
-          "image24.png",
-          "cover1.png",
-          "cover2.png",
-          "cover3.png", // Add all image names here
-        ].map(async (imageName) => {
-          return await getDownloadURL(ref(imageRef, imageName));
-        })
-      );
-      const shuffledImageURLs = shuffleArray(urls);
-      setImageURLs(shuffledImageURLs);
+      const artworksCollection = collection(db, "accounts");
+      const querySnapshot = await getDocs(artworksCollection);
+      const users = querySnapshot.docs.map((doc) => doc.id); // Get IDs of all users
+  
+      const allArtworks = [];
+  
+      for (const user of users) {
+        // Query each user's exhibit path
+        const userExhibitCollection = collection(db, `accounts/${user}/exhibit`);
+        const userExhibitSnapshot = await getDocs(userExhibitCollection);
+        const userArtworks = userExhibitSnapshot.docs.map(async (doc) => {
+          const userData = await getDoc(doc.ref.parent.parent);
+          return {
+            id: doc.id,
+            ...doc.data(),
+            artist: userData.data().username, // Fetch username from user data
+          };
+        });
+        allArtworks.push(...(await Promise.all(userArtworks)));
+      }
     } catch (error) {
-      console.error("Error fetching data:", error);
+      console.error("Error fetching artworks:", error);
+    }
+  };
+  
+
+  const fetchFeaturedArtists = async () => {
+    try {
+      // Fetch top 5 users with most followers
+      const usersRef = db.collection("accounts").orderBy("followers", "desc").limit(5);
+      const querySnapshot = await usersRef.get();
+      const artistsData: any[] = [];
+      querySnapshot.forEach((doc) => {
+        artistsData.push(doc.data());
+      });
+      setFeaturedArtists(artistsData);
+    } catch (error) {
+      console.error("Error fetching featured artists:", error);
     }
   };
 
@@ -134,14 +108,6 @@ const Home: React.FC = () => {
     showSlides(n);
   };
 
-  const shuffleArray = (array: any[]) => {
-    for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
-    }
-    return array;
-  };
-
   const showDescription = (
     e: React.MouseEvent<HTMLImageElement, MouseEvent>
   ) => {
@@ -162,136 +128,114 @@ const Home: React.FC = () => {
   };
 
   return (
-    <div>
-      <Header />
+    <>
       <div>
-        <Box style={{ marginBottom: "100px" }}>
-          <div className="slideshow-container">
-            {imageURLs.slice(0, 7).map((url, index) => (
-              <div key={index} className="mySlides fade">
-                <img src={url} style={{ width: "100%" }} />
-              </div>
-            ))}
+        <Header />
+        <div>
+          <Box style={{ marginBottom: "100px" }}>
+            <div className="slideshow-container">
+              {imageURLs.slice(0, 7).map((url, index) => (
+                <div key={index} className="mySlides fade">
+                  <img src={url} style={{ width: "100%" }} />
+                </div>
+              ))}
 
-            <div className="dot-container">
-              {imageURLs.slice(0, 7).map((_, index) => (
-                <span
-                  key={index}
-                  className="dot"
-                  onClick={() => currentSlide(index + 1)}
-                ></span>
+              <div className="dot-container">
+                {imageURLs.slice(0, 7).map((_, index) => (
+                  <span
+                    key={index}
+                    className="dot"
+                    onClick={() => currentSlide(index + 1)}
+                  ></span>
+                ))}
+              </div>
+
+              <a className="prev" onClick={() => plusSlides(-1)}>
+                &#10094;
+              </a>
+              <a className="next" onClick={() => plusSlides(1)}>
+                &#10095;
+              </a>
+            </div>
+          </Box>
+
+          <Box style={{ marginBottom: "100px" }}>
+            <p className="text-header">Featured Artists</p>
+
+            <div className="artists-section">
+              {featuredArtists.map((artist, index) => (
+                <div key={index} className="artist-wrapper">
+                  <Link to={`/profile/${artist.username}`}>
+                    <img
+                      className="featured-artist"
+                      src={artist.profilePicture}
+                      alt={`Featured Artist ${index + 1}`}
+                    />
+                  </Link>
+                  <div className="artist-name">{artist.username}</div>
+                </div>
               ))}
             </div>
+          </Box>
 
-            <a className="prev" onClick={() => plusSlides(-1)}>
-              &#10094;
-            </a>
-            <a className="next" onClick={() => plusSlides(1)}>
-              &#10095;
-            </a>
-          </div>
-        </Box>
+          <Box m="0 auto" sx={{ width: "80vw", height: "auto" }}>
+            <p className="text-header">Explore</p>
 
-        <Box style={{ marginBottom: "100px" }}>
-          <p className="text-header">Featured Artists</p>
-
-          <div className="artists-section">
-            {imageURLs.slice(0, 10).map((url, index) => (
-              <div key={index} className="artist-wrapper">
-                <Link to="/Profile">
-                  <img
-                    className="featured-artist"
-                    src={url}
-                    alt={`Featured Artist ${index + 1}`}
+            <ImageList variant="masonry" cols={4} gap={25}>
+              {imageURLs.slice(0, 20).map((url, index) => (
+                <ImageListItem key={index}>
+                  <img key={index} src={url} onClick={showDescription} />
+                  <ImageListItemBar
+                    position="below"
+                    title={"Title"}
+                    subtitle={`by Artist Name`}
                   />
-                </Link>
-                <div className="artist-name">{names[index]}</div>
-              </div>
-            ))}
-          </div>
-        </Box>
+                </ImageListItem>
+              ))}
+            </ImageList>
 
-        <Box m="0 auto" sx={{ width: "80vw", height: "auto" }}>
-          <p className="text-header">Explore</p>
-
-          {/* <div className="collage">
-            {imageURLs.slice(6).map((url, index) => (
-              <div
-                key={index}
-                className="collage_pics"
-                data-description="Whale House, John Doe"
-              >
-                <img
-                  src={url}
-                  style={{ width: "100%" }}
-                  onClick={showDescription}
-                />
-              </div>
-            ))}
-          </div> */}
-
-          <ImageList variant="masonry" cols={4} gap={25}>
-            {imageURLs.map((url, index) => (
-              <ImageListItem key={index}>
-                <img
-                  key={index}
-                  src={url}
-                  onClick={showDescription}
-                  //alt={artwork.type}
-                  //className="artwork"
-                />
-
-                <ImageListItemBar
-                  position="below"
-                  title={"Title"}
-                  subtitle={`by Artist Name`}
-                />
-              </ImageListItem>
-            ))}
-          </ImageList>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "flex-end",
+                alignItems: "center",
+                height: "100%",
+                paddingBottom: "5%",
+                paddingTop: "3%",
+              }}
+            >
+              <Link to={"/explore"} style={{ textDecoration: "none" }}>
+                <Typography
+                  sx={{
+                    margin: "0 auto",
+                    fontFamily: "Montserrat",
+                    fontSize: "120%",
+                    fontWeight: "500",
+                    textDecoration: "underline",
+                  }}
+                >
+                  Explore more...
+                </Typography>
+              </Link>
+            </Box>
+          </Box>
 
           <Box
-            sx={{
-              display: "flex",
-              justifyContent: "flex-end", // Align children to the start (left)
-              alignItems: "center", // Center align items vertically
-              height: "100%", // Optional: ensure the Box takes up full height of its container
-              paddingBottom: "5%",
-              paddingTop: "3%",
-            }}
+            className="popup-container"
+            onClick={handleClosePopup}
+            style={{ display: popupDisplay }}
           >
-            <Link to={"/explore"} style={{ textDecoration: "none" }}>
-              <Typography
-                sx={{
-                  margin: "0 auto",
-                  fontFamily: "Montserrat",
-                  fontSize: "120%",
-                  fontWeight: "500",
-                  textDecoration: "underline",
-                }}
-              >
-                Explore more...
-              </Typography>
-            </Link>
-          </Box>
-        </Box>
-
-        <Box
-          className="popup-container"
-          onClick={handleClosePopup}
-          style={{ display: popupDisplay }}
-        >
-          <div id="popup-content" className="popup-content">
-            <img id="popup-image" src={popupImageSrc} alt="Clicked Image" />
-            <p id="popup-description">
-              <Link to="/product">{popupDescription}</Link>
-            </p>
-          </div>
-        </Box>
-      </div>
-      <Footer />
+            <div id="popup-content"
+          className="popup-content">
+          <img id="popup-image" src={popupImageSrc} alt="Clicked Image" />
+          <p id="popup-description">{popupDescription}</p>
+        </div>
+      </Box>
     </div>
-  );
+  </div>
+  <Footer />
+</>
+);
 };
 
 export default Home;

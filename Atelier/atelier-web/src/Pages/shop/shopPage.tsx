@@ -7,7 +7,7 @@ import Header from "../../Header";
 import Footer from "../../Footer";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
-import { MenuItem, Select, FormControl, InputLabel } from "@mui/material";
+import { MenuItem, Select, FormControl, InputLabel, Link } from "@mui/material";
 
 // Define a function to filter artworks based on selected tag
 const filterByTag = (artwork, selectedTag) => {
@@ -145,7 +145,7 @@ const Shop: React.FC = () => {
         {displayedArtworks.map((artwork, index) => (
           <div key={index} className="artwork">
             <div className="artwork-container">
-              <img src={artwork.coverPhoto} alt={artwork.type} />
+                <img src={artwork.coverPhoto} alt={artwork.type} />
               <div className="artwork-details">
                 <p className="title">
                   {artwork.name}, {artwork.artist}
