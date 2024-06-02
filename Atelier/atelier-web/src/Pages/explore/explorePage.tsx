@@ -20,6 +20,10 @@ import {
   InputLabel,
   Button,
   IconButton,
+  Typography,
+  Grid,
+  Paper,
+  styled,
 } from "@mui/material";
 
 const Explore: React.FC = () => {

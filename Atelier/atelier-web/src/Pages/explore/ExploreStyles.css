@@ -107,6 +107,12 @@ input[type="text"] {
   margin: 50px;
 }
 
+.menu-item {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 100%;
+  font-weight: 500;
+}
+
 .artwork {
   width: 250px;
   height: 350px;
