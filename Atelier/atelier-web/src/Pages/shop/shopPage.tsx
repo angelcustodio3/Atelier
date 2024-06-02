@@ -7,7 +7,7 @@ import Header from "../../Header";
 import Footer from "../../Footer";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
-import { MenuItem, Select, FormControl, InputLabel, Link } from "@mui/material";
+import { MenuItem, Select, FormControl, InputLabel } from "@mui/material";
 
 // Define a function to filter artworks based on selected tag
 const filterByTag = (artwork, selectedTag) => {
@@ -18,7 +18,16 @@ const filterByTag = (artwork, selectedTag) => {
 const sortArtworks = (artworks, sortOption) => {
   return [...artworks].sort((a, b) => {
     // Check if 'a' and 'b' have the necessary properties
-    if (!a || !b || !a.name || !b.name || !a.artist || !b.artist || !a.dateAdded || !b.dateAdded) {
+    if (
+      !a ||
+      !b ||
+      !a.name ||
+      !b.name ||
+      !a.artist ||
+      !b.artist ||
+      !a.dateAdded ||
+      !b.dateAdded
+    ) {
       return 0; // Return 0 if any of the properties are missing
     }
 
@@ -32,9 +41,13 @@ const sortArtworks = (artworks, sortOption) => {
       case "artist-desc":
         return b.artist.localeCompare(a.artist);
       case "date":
-        return new Date(a.dateAdded).getTime() - new Date(b.dateAdded).getTime();
+        return (
+          new Date(a.dateAdded).getTime() - new Date(b.dateAdded).getTime()
+        );
       case "date-desc":
-        return new Date(b.dateAdded).getTime() - new Date(a.dateAdded).getTime();
+        return (
+          new Date(b.dateAdded).getTime() - new Date(a.dateAdded).getTime()
+        );
       case "price":
         return a.price - b.price;
       case "price-desc":
@@ -44,7 +57,6 @@ const sortArtworks = (artworks, sortOption) => {
     }
   });
 };
-
 
 const Shop: React.FC = () => {
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
@@ -69,7 +81,10 @@ const Shop: React.FC = () => {
 
       for (const user of users) {
         // Query each user's exhibit path
-        const userExhibitCollection = collection(db, `accounts/${user}/exhibit`);
+        const userExhibitCollection = collection(
+          db,
+          `accounts/${user}/exhibit`
+        );
         const userExhibitSnapshot = await getDocs(userExhibitCollection);
         const userArtworks = userExhibitSnapshot.docs.map(async (doc) => {
           const userData = await getDoc(doc.ref.parent.parent);
@@ -102,12 +117,17 @@ const Shop: React.FC = () => {
   };
 
   // Define a function to handle page change
-  const handlePageChange = (event: React.ChangeEvent<unknown>, page: number) => {
+  const handlePageChange = (
+    event: React.ChangeEvent<unknown>,
+    page: number
+  ) => {
     setCurrentPage(page);
   };
 
   useEffect(() => {
-    const filteredArtworks = artworks.filter((artwork) => filterByTag(artwork, selectedTag) && filterBySearch(artwork));
+    const filteredArtworks = artworks.filter(
+      (artwork) => filterByTag(artwork, selectedTag) && filterBySearch(artwork)
+    );
     const sortedFilteredArtworks = sortArtworks(filteredArtworks, sortOption);
     const paginatedArtworks = paginateArtworks(sortedFilteredArtworks);
     setDisplayedArtworks(paginatedArtworks);
@@ -117,9 +137,7 @@ const Shop: React.FC = () => {
     <div>
       <Header />
 
-      <h2 className="text-header">
-        Explore and discover amazing artworks and artists!
-      </h2>
+      <h2 className="text-header">Discover and own amazing artworks!</h2>
 
       <div className="search-bar">
         <input
@@ -131,21 +149,30 @@ const Shop: React.FC = () => {
         <button className="search-button">Search</button>
       </div>
 
-      <div className="filter-tags">
-        <button onClick={() => setSelectedTag(null)}>All</button>
-        <button onClick={() => setSelectedTag("Painting")}>Painting</button>
-        <button onClick={() => setSelectedTag("Photograph")}>Photograph</button>
-        <button onClick={() => setSelectedTag("Crafts")}>Crafts</button>
-        <button onClick={() => setSelectedTag("Scripture")}>Scripture</button>
-        <button onClick={() => setSelectedTag("Oil canvas")}>Oil Canvas</button>
-        <button onClick={() => setSelectedTag("Digital")}>Digital</button>
-      </div>
+      <Box
+        display="flex"
+        m="0 auto"
+        sx={{ width: "80vw", height: "auto", overflowX: "none" }}
+      >
+        <div className="filter-tags">
+          <button onClick={() => setSelectedTag(null)}>All</button>
+          <button onClick={() => setSelectedTag("Painting")}>Painting</button>
+          <button onClick={() => setSelectedTag("Photograph")}>
+            Photograph
+          </button>
+          <button onClick={() => setSelectedTag("Crafts")}>Crafts</button>
+          <button onClick={() => setSelectedTag("Scripture")}>Scripture</button>
+          <button onClick={() => setSelectedTag("Oil canvas")}>
+            Oil Canvas
+          </button>
+          <button onClick={() => setSelectedTag("Digital")}>Digital</button>
+        </div>
 
       <div style={{ marginBottom: "200px" }} className="artworks-container">
         {displayedArtworks.map((artwork, index) => (
           <div key={index} className="artwork">
             <div className="artwork-container">
-                <img src={artwork.coverPhoto} alt={artwork.type} />
+              <img src={artwork.coverPhoto} alt={artwork.type} />
               <div className="artwork-details">
                 <p className="title">
                   {artwork.name}, {artwork.artist}
@@ -167,24 +194,6 @@ const Shop: React.FC = () => {
           />
         </Stack>
       </div>
-
-      <FormControl sx={{ m: 1, minWidth: 120 }}>
-        <InputLabel id="sort-label">Sort By</InputLabel>
-        <Select
-          labelId="sort-label"
-          value={sortOption}
-          onChange={(e) => setSortOption(e.target.value as string)}
-        >
-          <MenuItem value="name">Name (A-Z)</MenuItem>
-          <MenuItem value="name-desc">Name (Z-A)</MenuItem>
-          <MenuItem value="artist">Artist (A-Z)</MenuItem>
-          <MenuItem value="artist-desc">Artist (Z-A)</MenuItem>
-          <MenuItem value="date">Oldest Date</MenuItem>
-          <MenuItem value="date-desc">Newest Date</MenuItem>
-          <MenuItem value="price">Price (Low to High)</MenuItem>
-          <MenuItem value="price-desc">Price (High to Low)</MenuItem>
-        </Select>
-      </FormControl>
 
       <Footer />
     </div>

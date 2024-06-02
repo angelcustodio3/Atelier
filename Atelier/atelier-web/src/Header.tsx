@@ -12,6 +12,7 @@ const Header: React.FC = () => {
   const [messageURL, setMessageIconURL] = useState("");
   const [cartURL, setCartIconURL] = useState("");
   const navigate = useNavigate(); // Import useNavigate hook
+  const [userData, setUserData] = useState(null);
 
   useEffect(() => {
     fetchIconURLs(); // Fetch icon URLs
@@ -83,7 +84,7 @@ const Header: React.FC = () => {
         <div id="header-icons">
           <div id="icons-main-container">
             <div className="icons-box">
-              <Link to="/cart">
+              <Link to="/transaction">
                 <img src={cartURL} className="icons" alt="cart" />
               </Link>
               <div className="cart-count">0</div>

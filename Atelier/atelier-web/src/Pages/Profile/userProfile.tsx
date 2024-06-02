@@ -27,6 +27,9 @@ import {
   TextField,
   Checkbox,
   FormControlLabel,
+  ImageList,
+  ImageListItem,
+  ImageListItemBar,
 } from "@mui/material";
 import { getAuth, deleteUser, signOut } from "firebase/auth";
 import { getStorage } from "firebase/storage";
@@ -607,7 +610,7 @@ const UserProfile = () => {
               fontWeight: "600",
               fontSize: "110%",
               textTransform: "none",
-              color: "black",
+              color: "#3B3B58",
             }}
           />
           <Tab
@@ -617,7 +620,7 @@ const UserProfile = () => {
               fontWeight: "600",
               fontSize: "110%",
               textTransform: "none",
-              color: "black",
+              color: "#3B3B58",
             }}
           />
           <Tab
@@ -627,22 +630,62 @@ const UserProfile = () => {
               fontWeight: "600",
               fontSize: "110%",
               textTransform: "none",
-              color: "black",
+              color: "#3B3B58",
             }}
           />
         </Tabs>
 
         {tabIndex === 0 && (
-          <Box p={2}>
-            <Typography variant="h6">About</Typography>
-            <Typography>{userData.description}</Typography>
+          <Box
+            paddingTop={5}
+            paddingBottom={25}
+            margin={"1%"}
+            borderRadius={"5px"}
+          >
+            <Typography
+              variant="h6"
+              sx={{
+                fontFamily: "Inknut Antiqua",
+                fontWeight: "600",
+                fontSize: "110%",
+                textTransform: "none",
+                color: "black",
+              }}
+            >
+              Bio
+            </Typography>
+            <Typography
+              sx={{
+                fontFamily: "Montserrat",
+                fontWeight: "500",
+                fontSize: "100%",
+                textTransform: "none",
+                color: "black",
+                padding: "1%",
+                margin: "1% 0 1% 0",
+                backgroundColor: "#ECD6D4",
+                borderRadius: "5px",
+              }}
+            >
+              {userData.description}
+            </Typography>
 
-            <Box>
+            <Box
+              sx={{ padding: "5% 0", display: "flex", flexDirection: "column" }}
+            >
               <Button
                 variant="contained"
                 color="secondary"
                 onClick={handleLogout}
-                sx={{ marginTop: 2 }}
+                sx={{
+                  marginTop: 2,
+                  width: "15%",
+                  backgroundColor: "#91488A",
+                  fontFamily: "Montserrat",
+                  fontWeight: "500",
+                  fontSize: "100%",
+                  textTransform: "none",
+                }}
               >
                 Logout
               </Button>
@@ -650,7 +693,14 @@ const UserProfile = () => {
                 variant="contained"
                 color="error"
                 onClick={handleDeleteAccount}
-                sx={{ marginTop: 2 }}
+                sx={{
+                  marginTop: 2,
+                  width: "15%",
+                  fontFamily: "Montserrat",
+                  fontWeight: "500",
+                  fontSize: "100%",
+                  textTransform: "none",
+                }}
               >
                 Delete Account
               </Button>
@@ -659,119 +709,238 @@ const UserProfile = () => {
         )}
 
         {tabIndex === 1 && (
-          <Box p={2}>
-            <Typography variant="h6">Collection</Typography>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() => setOpenCollectionDialog(true)}
+          <Box
+            paddingTop={5}
+            paddingBottom={25}
+            margin={"1%"}
+            borderRadius={"5px"}
+          >
+            <Typography
+              variant="h6"
+              sx={{
+                fontFamily: "Inknut Antiqua",
+                fontWeight: "600",
+                fontSize: "110%",
+                textTransform: "none",
+                color: "black",
+              }}
             >
-              Add Collection
-            </Button>
+              Collection
+            </Typography>
+
             <Box mt={2}>
               {collections.map((collection) => (
                 <Box
                   key={collection.id}
                   p={2}
                   border={1}
-                  borderColor="grey.400"
+                  borderColor="grey.200"
                   mb={2}
+                  sx={{ backgroundColor: "#ECD6D4" }}
                 >
-                  <img
-                    src={collection.coverPhoto}
-                    alt={collection.name}
-                    style={{
-                      width: "100%",
-                      maxHeight: "200px",
-                      objectFit: "cover",
-                    }}
-                  />
-                  <Typography variant="h6">{collection.name}</Typography>
-                  <Typography>{collection.description}</Typography>
-                  <Button
-                    variant="contained"
-                    color="secondary"
-                    onClick={() => handleDeleteCollection(collection.id)}
-                  >
-                    Delete Collection
-                  </Button>
-                  <Button
-                    variant="contained"
-                    color="secondary"
-                    onClick={() =>
-                      openArtworkDialogForCollection(collection.id)
-                    }
-                  >
-                    Add Artwork
-                  </Button>
+                  <Box sx={{ display: "flex" }}>
+                    <Box sx={{ width: "25%", height: "25%" }}>
+                      <img
+                        src={collection.coverPhoto}
+                        alt={collection.name}
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "cover",
+                        }}
+                      />
+                    </Box>
+                    <Box
+                      sx={{
+                        width: "45%",
+                        height: "25%",
+                        display: "flex",
+                        flexDirection: "column",
+                        padding: "5% 0 5% 3%",
+                      }}
+                    >
+                      <Typography
+                        variant="h6"
+                        sx={{ fontFamily: "Inknut Antiqua" }}
+                      >
+                        {collection.name}
+                      </Typography>
+                      <Typography sx={{ fontFamily: "Montserrat" }}>
+                        {collection.description}
+                      </Typography>
+                    </Box>
+                  </Box>
+
                   {/* Render artworks for this collection */}
                   <Box mt={2}>
-                    {collection.artworks &&
-                      collection.artworks.map((artwork) => (
-                        <Box
-                          key={artwork.id}
-                          p={2}
-                          border={1}
-                          borderColor="grey.400"
-                          mb={2}
-                        >
-                          <img
-                            src={artwork.coverPhoto}
-                            alt={artwork.name}
-                            style={{
-                              width: "100%",
-                              maxHeight: "200px",
-                              objectFit: "cover",
-                            }}
-                          />
-                          <Typography variant="h6">{artwork.name}</Typography>
-                          <Typography>{artwork.description}</Typography>
-                          <Button
-                    variant="contained"
-                    color="secondary"
-                    onClick={() =>
-                      handleDeleteArtwork(collection.id, artwork.id)
-                    }
-                  >
-                    Delete Artwork
-                  </Button>
-                        </Box>
-                      ))}
+                    <ImageList variant="masonry" cols={5} gap={25}>
+                      {collection.artworks &&
+                        collection.artworks.map((artwork) => (
+                          <ImageListItem>
+                            <img
+                              src={artwork.coverPhoto}
+                              alt={artwork.name}
+                              style={{
+                                width: "100%",
+                                maxHeight: "200px",
+                                objectFit: "cover",
+                                borderRadius: "5px",
+                              }}
+                            />
+                            <ImageListItemBar
+                              position="below"
+                              title={artwork.name}
+                              sx={{
+                                fontFamily: "Inknut Antiqua",
+                                fontWeight: "600",
+                                fontSize: "125%",
+                              }}
+                            />
+                            <ImageListItemBar
+                              position="below"
+                              subtitle={artwork.description}
+                              sx={{
+                                fontFamily: "Montserrat",
+                                fontWeight: "400",
+                                fontSize: "110%",
+                                padding: "0 ",
+                              }}
+                            />
+
+                            {/* <Typography variant="h6">{artwork.name}</Typography>
+                            <Typography>{artwork.description}</Typography> */}
+                            {/* Add more artwork details here */}
+                          </ImageListItem>
+                        ))}
+                    </ImageList>
                   </Box>
                   {/* Add event handler for collection click */}
-                  <Box mt={2}>
+
+                  <Box sx={{ display: "flex-start", flexDirection: "row" }}>
                     <Button
                       variant="contained"
                       color="primary"
                       onClick={() => handleCollectionClick(collection.id)}
+                      sx={{
+                        fontFamily: "Montserrat",
+                        fontWeight: "500",
+                        fontSize: "90%",
+                        textTransform: "none",
+                        marginRight: "1%",
+                        backgroundColor: "#91488A",
+                        color: "white",
+                        "&:hover": {
+                          backgroundColor: "#3B3B58",
+                          fontWeight: "600",
+                        },
+                      }}
                     >
                       View Artworks
+                    </Button>
+
+                    <Button
+                      variant="contained"
+                      onClick={() =>
+                        openArtworkDialogForCollection(collection.id)
+                      }
+                      sx={{
+                        fontFamily: "Montserrat",
+                        fontWeight: "500",
+                        fontSize: "90%",
+                        textTransform: "none",
+                        marginRight: "1%",
+                        backgroundColor: "#91488A",
+                        color: "white",
+                        "&:hover": {
+                          backgroundColor: "#3B3B58",
+                          fontWeight: "600",
+                        },
+                      }}
+                    >
+                      Add Artwork
+                    </Button>
+                    <Button
+                      variant="contained"
+                      //color="secondary"
+                      onClick={() => handleDeleteCollection(collection.id)}
+                      sx={{
+                        fontFamily: "Montserrat",
+                        fontWeight: "500",
+                        fontSize: "90%",
+                        textTransform: "none",
+                        marginRight: "1%",
+                        backgroundColor: "red",
+                        color: "white",
+                        "&:hover": {
+                          backgroundColor: "#3B3B58",
+                          fontWeight: "600",
+                        },
+                      }}
+                    >
+                      Delete Collection
                     </Button>
                   </Box>
                 </Box>
               ))}
+
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => setOpenCollectionDialog(true)}
+                sx={{
+                  fontFamily: "Montserrat",
+                  fontWeight: "500",
+                  fontSize: "90%",
+                  textTransform: "none",
+                  marginRight: "1%",
+                  backgroundColor: "#ECD6D4",
+                  color: "black",
+                  "&:hover": {
+                    backgroundColor: "#91488A",
+                    fontWeight: "600",
+                    color: "white",
+                  },
+                }}
+              >
+                Add Collection
+              </Button>
             </Box>
           </Box>
         )}
 
         {tabIndex === 2 && (
-          <Box p={2}>
-            <Typography variant="h6">Exhibit</Typography>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() => setOpenExhibitDialog(true)}
+          <Box
+            paddingTop={5}
+            paddingBottom={25}
+            margin={"1%"}
+            borderRadius={"5px"}
+          >
+            <Typography
+              variant="h6"
+              sx={{
+                fontFamily: "Inknut Antiqua",
+                fontWeight: "600",
+                fontSize: "110%",
+                textTransform: "none",
+                color: "black",
+              }}
             >
-              Add Artwork to Exhibit
-            </Button>
-            <Box mt={2}>
+              Exhibit
+            </Typography>
+
+            <Box mt={2} sx={{ display: "block" }}>
               {exhibitArtworks.map((artwork) => (
                 <Box
                   key={artwork.id}
                   p={2}
                   border={1}
-                  borderColor="grey.400"
+                  borderColor="grey.200"
                   mb={2}
+                  sx={{
+                    backgroundColor: "#ECD6D4",
+                    borderRadius: "5px",
+                    width: "25%",
+                  }}
                 >
                   <img
                     src={artwork.coverPhoto}
@@ -780,12 +949,32 @@ const UserProfile = () => {
                       width: "100%",
                       maxHeight: "200px",
                       objectFit: "cover",
+                      borderRadius: "5px",
                     }}
                   />
-                  <Typography variant="h6">{artwork.name}</Typography>
-                  <Typography>{artwork.description}</Typography>
-                  <Typography>Tags: {artwork.tags.join(", ")}</Typography>
+                  <Typography
+                    variant="h6"
+                    sx={{
+                      fontFamily: "Inknut Antiqua",
+                      fontWeight: "600",
+                      fontSize: "120%",
+                      //padding: "0 ",
+                    }}
+                  >
+                    {artwork.name}
+                  </Typography>
+                  <Typography
+                    sx={{
+                      fontFamily: "Montserrat",
+                      fontWeight: "400",
+                      fontSize: "110%",
+                      padding: "0 ",
+                    }}
+                  >
+                    {artwork.description}
+                  </Typography>
                   <Typography>Price: ${artwork.price}</Typography>
+                  <Typography>Tags: {artwork.tags.join(", ")}</Typography>
                   <Typography>Stock: {artwork.stock}</Typography>
                   <Button
                     variant="contained"
@@ -793,11 +982,45 @@ const UserProfile = () => {
                     onClick={() =>
                       handleDeleteExhibitArtwork(artwork.id)
                     }
+                    sx={{
+                      fontFamily: "Montserrat",
+                      fontWeight: "500",
+                      fontSize: "90%",
+                      textTransform: "none",
+                      marginRight: "1%",
+                      backgroundColor: "red",
+                      color: "white",
+                      "&:hover": {
+                        backgroundColor: "#3B3B58",
+                        fontWeight: "600",
+                      },
+                    }}
                   >
                     Delete Artwork
                   </Button>
                 </Box>
               ))}
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => setOpenExhibitDialog(true)}
+                sx={{
+                  fontFamily: "Montserrat",
+                  fontWeight: "500",
+                  fontSize: "90%",
+                  margin: "2% 0",
+                  textTransform: "none",
+                  marginRight: "1%",
+                  backgroundColor: "#91488A",
+                  color: "white",
+                  "&:hover": {
+                    backgroundColor: "#3B3B58",
+                    fontWeight: "600",
+                  },
+                }}
+              >
+                Add Artwork to Exhibit
+              </Button>
             </Box>
           </Box>
         )}

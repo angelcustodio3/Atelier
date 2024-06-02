@@ -1,0 +1,42 @@
+/* File: CartStyle.css */
+
+.cart-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .cart-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .cart-item {
+    margin: 10px;
+  }
+  
+  .cart-item-image {
+    width: 200px; /* Adjust as needed */
+    height: 200px; /* Adjust as needed */
+  }
+  
+  .cart-item-name {
+    margin-bottom: 5px;
+  }
+  
+  .cart-item-owner,
+  .cart-item-price {
+    margin-bottom: 10px;
+  }
+  
+  .cart-item-actions {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .cart-item-buy-btn,
+  .cart-item-delete-btn {
+    width: 100px;
+  }
+  
