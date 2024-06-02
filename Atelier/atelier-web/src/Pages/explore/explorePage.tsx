@@ -18,9 +18,7 @@ import {
   Select,
   FormControl,
   InputLabel,
-  Button,
   IconButton,
-  Container,
   Typography,
   Grid,
   Paper,
@@ -168,6 +166,7 @@ const Explore: React.FC = () => {
 
       <Box
         display="flex"
+        justifyContent={"space-between"}
         m="0 auto"
         sx={{ width: "80vw", height: "auto", overflowX: "none" }}
       >
@@ -193,12 +192,13 @@ const Explore: React.FC = () => {
             fontWeight: "400",
           }}
         >
-          <InputLabel
+          {/* <InputLabel
             id="sort-label"
             sx={{ fontFamily: "Montserrat", fontWeight: "400" }}
           >
-            {/* Sort By */}
-          </InputLabel>
+           Sort By 
+          </InputLabel> */}
+
           <Select
             labelId="sort-label"
             value={sortOption}

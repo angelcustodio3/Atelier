@@ -50,6 +50,12 @@ input[type="text"] {
   font-weight: 500;
 }
 
+.menu-item {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 100%;
+  font-weight: 500;
+}
+
 .filter-tags {
   width: 80dvw;
   margin: 0 auto;
