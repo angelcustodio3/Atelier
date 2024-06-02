@@ -1,4 +1,4 @@
-bosy{
+html{
   background-color: #9f1776; 
 }
 
@@ -10,26 +10,25 @@ bosy{
   align-items: center;
   justify-content: center;
   padding: 20px;
-  /* background-color: #9f1776; */
+  background-color: #9f1776;
 }
 
 .forgot-password-container h2 {
   margin-bottom: 10px;
 }
 .title{
-  color: #000000;
+  color: #fff;
 }
 .instruction {
   font-family: 'Montserrat';
   font-size: medium;
-  color: #292929;
+  color: #bababa;
 }
 
 .forgot-password-container form {
   display: flex;
   flex-direction: column;
   width: 300px;
-  background-color: #9f1776;
 }
 
 .forgot-password-container input {

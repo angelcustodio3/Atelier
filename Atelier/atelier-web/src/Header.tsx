@@ -7,16 +7,14 @@ import { auth } from "../FirebaseConfig";
 
 const Header: React.FC = () => {
   const [logoIconURL, setLogoIconURL] = useState("");
-  // const [profileIconURL, setProfileIconURL] = useState("");
+  const [profileIconURL, setProfileIconURL] = useState("");
   const [notifURL, setNotifIconURL] = useState("");
   const [messageURL, setMessageIconURL] = useState("");
   const [cartURL, setCartIconURL] = useState("");
   const navigate = useNavigate(); // Import useNavigate hook
-  const [userProfilePhotoURL, setUserProfilePhotoURL] = useState<string | null>(null);
 
   useEffect(() => {
     fetchIconURLs(); // Fetch icon URLs
-    fetchUserProfilePhoto();
   }, []);
 
   const fetchIconURLs = async () => {
@@ -32,25 +30,14 @@ const Header: React.FC = () => {
       const notifURL = await getDownloadURL(ref(iconsRef, "notif-icon.png"));
 
       setLogoIconURL(logoURL);
+      setProfileIconURL(profileURL);
       setCartIconURL(cartURL);
       setMessageIconURL(messageURL);
       setNotifIconURL(notifURL);
-      fetchUserProfilePhoto();
     } catch (error) {
       console.error("Error fetching icon URLs:", error);
     }
   };
-  const fetchUserProfilePhoto = () => {
-    // Get the currently signed-in user
-    const user = auth.currentUser;
-
-    // If the user is signed in
-    if (user) {
-      // Get the user's profile photo URL
-      setUserProfilePhotoURL(user.photoURL);
-    }
-  };
-
 
   const handleProfileClick = () => {
     // Retrieve the document ID of the current user from local storage
@@ -96,7 +83,7 @@ const Header: React.FC = () => {
         <div id="header-icons">
           <div id="icons-main-container">
             <div className="icons-box">
-              <Link to="/transaction">
+              <Link to="/cart">
                 <img src={cartURL} className="icons" alt="cart" />
               </Link>
               <div className="cart-count">0</div>
@@ -114,18 +101,12 @@ const Header: React.FC = () => {
           </div>
 
           <div id="profile-box">
-            {userProfilePhotoURL ? (
-              <img
-                src={userProfilePhotoURL}
-                className="profile"
-                alt="Profile Circle"
-                onClick={handleProfileClick}
-              />
-            ) : (
-              <div className="profile-placeholder" onClick={handleProfileClick}>
-                {/* Placeholder icon or text when user profile photo is not available */}
-              </div>
-            )}
+            <img
+              src={profileIconURL}
+              className="profile"
+              alt="Profile Circle"
+              onClick={handleProfileClick}
+            />
           </div>
         </div>
       </section>
