@@ -1,12 +1,12 @@
-/* File: HeaderStyle.css */
+/* File: TransactionStyle.css */
 
-#content.open,
-#content.open header {
+.transaction-page #content.open,
+.transaction-page #content.open header {
   left: 240px; /* Adjust based on Drawer width */
 }
 
-#content,
-header {
+.transaction-page #content,
+.transaction-page header {
   transition: 300ms left;
   -webkit-transition: 300ms left;
   -moz-transition: 300ms left;
@@ -14,16 +14,15 @@ header {
   left: 0;
 }
 
-/* Optional: Add any other styles for your header and content */
-#header {
+.transaction-page #header {
   width: 100%;
   position: fixed;
   top: 0;
   z-index: 1100;
 }
 
-#drawer-content {
-  margin-top: 100px; 
+.transaction-page #drawer-content {
+  margin-top: 100px;
   z-index: 1000;
 }
 
