@@ -24,6 +24,7 @@ import {
   Paper,
   styled,
 } from "@mui/material";
+import { lightBlue } from "@mui/material/colors";
 
 const Shop: React.FC = () => {
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
@@ -204,24 +205,93 @@ const Shop: React.FC = () => {
         </FormControl>
       </Box>
 
-      <Link to="/product">
-        <div style={{ marginBottom: "200px" }} className="artworks-container">
-          {sortedArtworks.map((artwork, index) => (
-            <div key={index} className="artwork">
-              <div className="artwork-container">
-                <img src={artwork.imageUrl} alt={artwork.type} />
-                <div className="artwork-details">
-                  <p className="title">
-                    {artwork.title}, {artwork.artist}
-                  </p>
-                  <p className="price">${artwork.price}</p>
-                  <p className="category">{artwork.type}</p>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </Link>
+      <Box
+        sx={{
+          margin: "0 auto",
+          width: "80vw",
+          height: "auto",
+          //backgroundColor: "pink",
+        }}
+      >
+        <Link to="/product">
+          <div style={{ marginBottom: "200px" }} className="artworks-container">
+            {sortedArtworks.map((artwork) => (
+              <>
+                <Box
+                  sx={{
+                    width: "25%",
+                    height: "45%",
+                    padding: "1%",
+                  }}
+                >
+                  <Box
+                    sx={{
+                      width: "100%",
+                      height: "75%",
+                      display: "flex", // Use flexbox layout
+                      flexDirection: "column", // Arrange children in a column
+                      justifyContent: "center", // Center children vertically
+                      alignItems: "center", // Center children horizontally
+                      padding: "5%",
+                      backgroundColor: "#D9ADA9",
+                      borderRadius: "5px",
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        width: "250px",
+                        height: "350px",
+                        overflow: "hidden",
+                        display: "flex",
+                        justifyContent: "center", // Center image horizontally
+                        alignItems: "center", // Center image vertically
+                      }}
+                    >
+                      <img
+                        src={artwork.imageUrl}
+                        alt={artwork.type}
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "cover",
+                          borderRadius: "5px",
+                        }}
+                      />
+                    </Box>
+                    <Typography
+                      sx={{
+                        marginTop: "3%",
+                        textAlign: "center", // Center the text within the Typography component
+                      }}
+                    >
+                      {artwork.title}, {artwork.artist}
+                    </Typography>
+                  </Box>
+
+                  <Box sx={{ width: "100%", height: "15%" }}>
+                    <p>${artwork.price}</p>
+                  </Box>
+                  <Box sx={{ width: "100%", height: "10%" }}>
+                    <p>{artwork.type}</p>
+                  </Box>
+                </Box>
+                {/* <div key={index} className="artwork">
+                  <div className="artwork-container">
+                    <img src={artwork.imageUrl} alt={artwork.type} />
+                    <div className="artwork-details">
+                      <p className="title">
+                        {artwork.title}, {artwork.artist}
+                      </p>
+                      <p className="price">${artwork.price}</p>
+                      <p className="category">{artwork.type}</p>
+                    </div>
+                  </div>
+                </div> */}
+              </>
+            ))}
+          </div>
+        </Link>
+      </Box>
 
       <Footer />
     </div>
