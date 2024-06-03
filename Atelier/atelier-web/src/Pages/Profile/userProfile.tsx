@@ -806,6 +806,28 @@ const UserProfile = () => {
                                 padding: "0 ",
                               }}
                             />
+                            <Button
+                    variant="contained"
+                    color="secondary"
+                    onClick={() =>
+                      handleDeleteArtwork(collection.id, artwork.id)
+                    }
+                    sx={{
+                      fontFamily: "Montserrat",
+                      fontWeight: "500",
+                      fontSize: "90%",
+                      textTransform: "none",
+                      marginRight: "1%",
+                      backgroundColor: "red",
+                      color: "white",
+                      "&:hover": {
+                        backgroundColor: "#3B3B58",
+                        fontWeight: "600",
+                      },
+                    }}
+                  >
+                    Delete Artwork
+                  </Button>
 
                             {/* <Typography variant="h6">{artwork.name}</Typography>
                             <Typography>{artwork.description}</Typography> */}

@@ -7,7 +7,7 @@ import Header from "../../Header";
 import Footer from "../../Footer";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
-import { MenuItem, Select, FormControl, InputLabel } from "@mui/material";
+import { MenuItem, Select, FormControl, InputLabel, Box } from "@mui/material";
 
 // Define a function to filter artworks based on selected tag
 const filterByTag = (artwork, selectedTag) => {
@@ -167,6 +167,7 @@ const Shop: React.FC = () => {
           </button>
           <button onClick={() => setSelectedTag("Digital")}>Digital</button>
         </div>
+      </Box>
 
       <div style={{ marginBottom: "200px" }} className="artworks-container">
         {displayedArtworks.map((artwork, index) => (
@@ -197,6 +198,7 @@ const Shop: React.FC = () => {
 
       <Footer />
     </div>
+  
   );
 };
 
