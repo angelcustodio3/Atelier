@@ -64,17 +64,17 @@ header {
 }
 
 #icons-main-container {
-  width: 60%;
+  width: 50%;
   margin-left: 10%;
   margin-right: 5%;
   padding: 0;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
 }
 
 .icons {
-  width: 100%;
+  width: 90%;
   padding: 25%;
 }
 

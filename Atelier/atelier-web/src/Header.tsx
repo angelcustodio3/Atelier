@@ -87,18 +87,18 @@ const Header: React.FC = () => {
               <Link to="/transaction">
                 <img src={cartURL} className="icons" alt="cart" />
               </Link>
-              <div className="cart-count">0</div>
+              {/* <div className="cart-count">0</div> */}
             </div>
             <div>
               <Link to="/chats">
                 <img src={messageURL} className="icons" alt="message" />
               </Link>
             </div>
-            <div>
+            {/* <div>
               <Link to="/Notification">
                 <img src={notifURL} className="icons" alt="notif" />
               </Link>
-            </div>
+            </div> */}
           </div>
 
           <div id="profile-box">
